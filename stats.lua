@@ -3,19 +3,29 @@
 local stats = {}
 
 -- Bird object
+
+math.randomseed(os.time()) 
+
 local bird = {
     name = "Default",
     speed = 5,
     stamina = 5,
-    happiness = 5
+    happiness = 5,
+    swimming = 5,
+    flying = 5,
+    running = 5
 }
 
 -- Initialize bird
 function stats.createBird(name)
     bird.name = name or "Bird"
-    bird.speed = 5
-    bird.stamina = 5
-    bird.happiness = 5
+    bird.speed = math.random(4, 6)
+    bird.stamina = math.random(4, 6)
+    bird.happiness = math.random(4, 6)
+    bird.swimming = math.random(4, 6)
+    bird.flying = math.random(4, 6)
+    bird.running = math.random(4, 6)
+    
 end
 
 -- Display stats
@@ -25,6 +35,10 @@ function stats.showStats()
     print("Speed: " .. bird.speed)
     print("Stamina: " .. bird.stamina)
     print("Happiness: " .. bird.happiness)
+    print("Swimming: " .. bird.swimming)
+    print("Flying: " .. bird.flying)
+    print("Running: " .. bird.running)
+
     print("------------------\n")
 end
 
@@ -54,5 +68,6 @@ function stats.play()
     bird.happiness = clamp(bird.happiness + 2)
     bird.stamina = clamp(bird.stamina - 1)
 end
+
 
 return stats
