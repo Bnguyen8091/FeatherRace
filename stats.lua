@@ -3,19 +3,21 @@ local stats = {}
 local bird = {
     name = "Default",
     speed = 6,
-    stamina = 6,
+    stamina = 10,
     happiness = 5,
     swimming = 5,
     flying = 6,
     running = 4
 }
 
+-- clamp helper
 local function clamp(value, min, max)
     if value < min then return min end
     if value > max then return max end
     return value
 end
 
+-- mood system
 local function getMood()
     if bird.happiness <= 1 then
         return "Awful"
@@ -30,61 +32,97 @@ local function getMood()
     end
 end
 
+-- stamina bar
+local function makeBar(value, max)
+    local filled = string.rep("#", value)
+    local empty = string.rep("-", max - value)
+    return "[" .. filled .. empty .. "]"
+end
+
+-- initialize bird
 function stats.createBird(name)
+    math.randomseed(os.time())
+
     bird.name = name or "Bird"
     bird.speed = 6
-    bird.stamina = 6
+    bird.stamina = 10
     bird.happiness = 5
     bird.swimming = 5
     bird.flying = 6
     bird.running = 4
 end
 
+-- HUD display
 function stats.showStats()
-    print("\n--- Bird Stats ---")
-    print("Name: " .. bird.name)
-    print("Speed: " .. bird.speed)
-    print("Stamina: " .. bird.stamina)
-    print("Mood: " .. getMood())
-    print("Swimming: " .. bird.swimming)
-    print("Flying: " .. bird.flying)
-    print("Running: " .. bird.running)
-    print("------------------\n")
+    print("\n================================")
+    print("         BIRD STATUS")
+    print("================================")
+    print("Name:      " .. bird.name)
+    print("Speed:     " .. bird.speed)
+    print("Stamina:   " .. bird.stamina .. " " .. makeBar(bird.stamina, 10))
+    print("Mood:      " .. getMood())
+    print("Swimming:  " .. bird.swimming)
+    print("Flying:    " .. bird.flying)
+    print("Running:   " .. bird.running)
+    print("================================\n")
 end
 
+-- game over condition
 function stats.isGameOver()
     if bird.stamina <= 0 then
-        print("\n=== GAME OVER ===")
+        print("\n===== GAME OVER =====")
         print(bird.name .. " is too exhausted to continue.")
         return true
     end
     return false
 end
 
+-- feed action
 function stats.feed()
+    local recovery = math.random(1, 2)
+
     print("You feed your bird.")
-    bird.stamina = clamp(bird.stamina + 2, 0, 10)
+    print("Stamina restored: +" .. recovery)
+
+    bird.stamina = clamp(bird.stamina + recovery, 0, 10)
     bird.happiness = clamp(bird.happiness + 1, 0, 10)
 end
 
+-- train action
 function stats.train()
     print("You train your bird.")
+
     bird.speed = clamp(bird.speed + 1, 0, 10)
     bird.stamina = clamp(bird.stamina - 1, 0, 10)
     bird.happiness = clamp(bird.happiness - 1, 0, 10)
 end
 
+-- play action
 function stats.play()
     print("You play with your bird.")
+
     bird.happiness = clamp(bird.happiness + 2, 0, 10)
     bird.stamina = clamp(bird.stamina - 1, 0, 10)
 end
 
+-- rest action
 function stats.rest()
+    local outcomes = {
+        {name = "Sleep Deprived", recovery = 5},
+        {name = "Rested", recovery = 7},
+        {name = "Well Rested", recovery = 10}
+    }
+
+    local result = outcomes[math.random(#outcomes)]
+
     print("Your bird takes a rest.")
-    bird.stamina = clamp(bird.stamina + 3, 0, 10)
+    print("Rest quality: " .. result.name)
+    print("Stamina restored: +" .. result.recovery)
+
+    bird.stamina = clamp(bird.stamina + result.recovery, 0, 10)
 end
 
+-- mood modifier for races (future use)
 function stats.getMoodRaceModifier()
     local mood = getMood()
 

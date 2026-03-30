@@ -5,15 +5,16 @@ function main()
 
     io.write("Enter your bird's name: ")
     local name = io.read()
+
     tools.createBird(name)
 
-    print("\nCommands: stats, feed, train, play, rest, quit\n")
+    print("\nCommands: feed, train, play, rest, stats, quit")
+    tools.showStats()
 
     while running do
         io.write("> ")
         local input = io.read()
 
-        -- trim spaces
         input = input:match("^%s*(.-)%s*$")
 
         if input == "quit" then
@@ -27,25 +28,29 @@ function main()
             tools.feed()
             if tools.isGameOver() then
                 running = false
+            else
+                tools.showStats()
             end
 
         elseif input == "train" then
             tools.train()
             if tools.isGameOver() then
                 running = false
+            else
+                tools.showStats()
             end
 
         elseif input == "play" then
             tools.play()
             if tools.isGameOver() then
                 running = false
+            else
+                tools.showStats()
             end
 
         elseif input == "rest" then
             tools.rest()
-            if tools.isGameOver() then
-                running = false
-            end
+            tools.showStats()
 
         else
             print("Unknown command.")
