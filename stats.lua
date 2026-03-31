@@ -44,12 +44,12 @@ function stats.createBird(name)
     math.randomseed(os.time())
 
     bird.name = name or "Bird"
-    bird.speed = 6
+    bird.speed = math.random(4, 6)
     bird.stamina = 10
-    bird.happiness = 5
-    bird.swimming = 5
-    bird.flying = 6
-    bird.running = 4
+    bird.happiness = math.random(4, 6)
+    bird.swimming = math.random(4, 6)
+    bird.flying = math.random(4, 6)
+    bird.running = math.random(4, 6)
 end
 
 -- HUD display
@@ -100,8 +100,8 @@ end
 -- play action
 function stats.play()
     print("You play with your bird.")
-
-    bird.happiness = clamp(bird.happiness + 2, 0, 10)
+    local bonus = clamp(getMood(), -1, 5) 
+    bird.happiness = clamp(bird.happiness + 2 + bonus, 0, 10)
     bird.stamina = clamp(bird.stamina - 1, 0, 10)
 end
 

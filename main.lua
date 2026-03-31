@@ -1,4 +1,5 @@
 local tools = require("stats")
+local track = require("race")
 
 function main()
     local running = true
@@ -7,6 +8,9 @@ function main()
     local name = io.read()
 
     tools.createBird(name)
+    
+    track.createRace()
+    track.showRace()
 
     print("\nCommands: feed, train, play, rest, stats, quit")
     tools.showStats()
