@@ -14,6 +14,13 @@ raceNames = {
     "Wing",
     "Beak Sprint",
     "Tailwind",
+    "Sky Glide",
+    "Wainng Race",
+    "Feather Frenzy",
+    "Beak Battle",
+    "Wing War",
+    "Tailwind Tussle",
+    "Feather Flurry"
 }
 
 function race.createRace()
@@ -42,6 +49,52 @@ function race.showRace()
     print("================================\n")
 end
 
+function race.racing(bird)
+    local runPower = (math.random(1, 10) + (bird.running * 3))
+    local swimPower = (math.random(1, 10) + (bird.swimming * 3))
+    local flyPower = (math.random(1, 10) + (bird.flying * 3))
 
+
+    local modifier = 0
+    if bird.happiness > 7 then 
+        modifier = 10 
+    elseif bird.happiness < 3 then 
+        modifier = -10 
+    end 
+
+
+    local staminaMult = 1.0
+    if bird.stamina < 3 then
+        staminaMult = 0.5
+    elseif bird.stamina < 5 then
+        staminaMult = 0.75
+    elseif bird.stamina > 8 then
+        staminaMult = 1.25
+    end
+
+    bird.stamina = math.max(0, bird.stamina - 5)
+
+    runPower = (runPower + modifier) * staminaMult
+    swimPower = (swimPower + modifier) * staminaMult
+    flyPower = (flyPower + modifier) * staminaMult
+
+    local totalScore = (runPower * (race.running / 100)) + 
+                       (swimPower * (race.swimming / 100)) + 
+                       (flyPower * (race.flying / 100))
+
+    local distancePerformance =  race.distance * (totalScore / 50) * (1 + (bird.speed) * 0.05)
+
+    print("\n" .. bird.name .. " performed at level: " .. string.format("%.2f", totalScore))
+    print("Distance Goal: " .. race.distance .. "m")
+    print("Units covered: " .. string.format("%.2f", distancePerformance) .. "m")
+
+    if distancePerformance >= race.distance then
+        print("CONGRATULATIONS! " .. bird.name .. " crossed the finish line!")
+    else
+        print("OH NO! " .. bird.name .. " collapsed before the end of the track.")
+    end
+
+    return totalScore
+end 
 
 return race

@@ -2,6 +2,7 @@ local tools = require("stats")
 local track = require("race")
 
 function main()
+    math.randomseed(os.time())
     local running = true
 
     io.write("Enter your bird's name: ")
@@ -54,6 +55,10 @@ function main()
 
         elseif input == "rest" then
             tools.rest()
+            tools.showStats()
+
+        elseif input == "race" then
+            track.racing(tools.getBird())
             tools.showStats()
 
         else
