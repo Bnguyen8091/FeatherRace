@@ -41,8 +41,6 @@ end
 
 -- initialize bird
 function stats.createBird(name)
-    math.randomseed(os.time())
-
     bird.name = name or "Bird"
     bird.speed = math.random(4, 6)
     bird.stamina = 10
@@ -100,7 +98,22 @@ end
 -- play action
 function stats.play()
     print("You play with your bird.")
-    local bonus = clamp(getMood(), -1, 5) 
+
+    local bonus = 0
+    local mood = getMood()
+
+    if mood == "Awful" then
+        bonus = -1
+    elseif mood == "Bad" then
+        bonus = 0
+    elseif mood == "Normal" then
+        bonus = 1
+    elseif mood == "Good" then
+        bonus = 2
+    elseif mood == "Great" then
+        bonus = 3
+    end
+
     bird.happiness = clamp(bird.happiness + 2 + bonus, 0, 10)
     bird.stamina = clamp(bird.stamina - 1, 0, 10)
 end
@@ -122,7 +135,7 @@ function stats.rest()
     bird.stamina = clamp(bird.stamina + result.recovery, 0, 10)
 end
 
--- mood modifier for races (future use)
+-- mood modifier for races
 function stats.getMoodRaceModifier()
     local mood = getMood()
 

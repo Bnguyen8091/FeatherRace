@@ -9,12 +9,12 @@ function main()
     local name = io.read()
 
     tools.createBird(name)
-    
-    track.createRace()
+
+    track.startRaceCycle()
     track.showRace()
+    tools.showStats()
 
     print("\nCommands: feed, train, play, rest, stats, quit")
-    tools.showStats()
 
     while running do
         io.write("> ")
@@ -28,13 +28,25 @@ function main()
 
         elseif input == "stats" then
             tools.showStats()
+            track.showRaceStatus()
 
         elseif input == "feed" then
             tools.feed()
             if tools.isGameOver() then
                 running = false
             else
+                local raceReady = track.advanceDay()
                 tools.showStats()
+                track.showRaceStatus()
+
+                if raceReady then
+                    local finished = track.runRaceDay(tools.getBird())
+                    tools.showStats()
+
+                    if finished then
+                        running = false
+                    end
+                end
             end
 
         elseif input == "train" then
@@ -42,7 +54,18 @@ function main()
             if tools.isGameOver() then
                 running = false
             else
+                local raceReady = track.advanceDay()
                 tools.showStats()
+                track.showRaceStatus()
+
+                if raceReady then
+                    local finished = track.runRaceDay(tools.getBird())
+                    tools.showStats()
+
+                    if finished then
+                        running = false
+                    end
+                end
             end
 
         elseif input == "play" then
@@ -50,16 +73,34 @@ function main()
             if tools.isGameOver() then
                 running = false
             else
+                local raceReady = track.advanceDay()
                 tools.showStats()
+                track.showRaceStatus()
+
+                if raceReady then
+                    local finished = track.runRaceDay(tools.getBird())
+                    tools.showStats()
+
+                    if finished then
+                        running = false
+                    end
+                end
             end
 
         elseif input == "rest" then
             tools.rest()
+            local raceReady = track.advanceDay()
             tools.showStats()
+            track.showRaceStatus()
 
-        elseif input == "race" then
-            track.racing(tools.getBird())
-            tools.showStats()
+            if raceReady then
+                local finished = track.runRaceDay(tools.getBird())
+                tools.showStats()
+
+                if finished then
+                    running = false
+                end
+            end
 
         else
             print("Unknown command.")
