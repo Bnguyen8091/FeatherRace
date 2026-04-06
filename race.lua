@@ -51,19 +51,19 @@ function race.createRace()
         part2 = math.random(3, 5)
         part3 = math.random(3, 5)
         race.distance = math.random(80, 110)
-        race.difficultyMultiplier = 0.85
+        race.difficultyMultiplier = 0.70
     elseif race.stage == 2 then
         part1 = math.random(2, 6)
         part2 = math.random(2, 6)
         part3 = math.random(2, 6)
         race.distance = math.random(110, 150)
-        race.difficultyMultiplier = 1.00
+        race.difficultyMultiplier = 0.95
     else
         part1 = math.random(1, 8)
         part2 = math.random(1, 8)
         part3 = math.random(1, 8)
         race.distance = math.random(150, 200)
-        race.difficultyMultiplier = 1.15
+        race.difficultyMultiplier = 1.10
     end
 
     local total = part1 + part2 + part3
