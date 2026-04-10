@@ -7,7 +7,8 @@ local bird = {
     happiness = 5,
     swimming = 5,
     flying = 6,
-    running = 4
+    running = 4,
+    money = 10000 --Default money for testing
 }
 
 -- clamp helper
@@ -62,6 +63,7 @@ function stats.showStats()
     print("Swimming:  " .. bird.swimming)
     print("Flying:    " .. bird.flying)
     print("Running:   " .. bird.running)
+    print("Money:   " .. bird.money)
     print("================================\n")
 end
 
@@ -154,6 +156,25 @@ end
 
 function stats.getBird()
     return bird
+end
+
+-- Money functions
+
+function stats.getMoney()
+    return bird.money
+end
+
+function stats.addMoney(amount)
+    bird.money = bird.money + amount
+end
+
+function stats.spendMoney(amount)
+    if bird.money >= amount then
+        bird.money = bird.money - amount
+        return true
+    else
+        return false
+    end
 end
 
 return stats

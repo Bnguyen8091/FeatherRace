@@ -1,5 +1,6 @@
 local tools = require("stats")
 local track = require("race")
+local shop = require("shop")
 
 function main()
     math.randomseed(os.time())
@@ -14,7 +15,11 @@ function main()
     track.showRace()
     tools.showStats()
 
-    print("\nCommands: feed, train, play, rest, stats, quit")
+    local function showCommands() -- reusable command interface
+        print("\nCommands: feed, train, play, rest, stats, shop, quit")
+    end
+
+    showCommands()
 
     while running do
         io.write("> ")
@@ -101,7 +106,9 @@ function main()
                     running = false
                 end
             end
-
+        elseif input == "shop" then --shop
+            shop.openShop()
+            showCommands()
         else
             print("Unknown command.")
         end
