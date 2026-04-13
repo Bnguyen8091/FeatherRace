@@ -97,6 +97,28 @@ function stats.train()
     bird.happiness = clamp(bird.happiness - 1, 0, 10)
 end
 
+function stats.trainSwimming()
+    print("You train your bird.")
+
+    bird.swimming = clamp(bird.swimming + 1, 0, 10)
+    bird.stamina = clamp(bird.stamina - 1, 0, 10)
+    bird.happiness = clamp(bird.happiness - 1, 0, 10)
+end
+
+function stats.trainFlying()
+    print("You train your bird.")
+
+    bird.flying = clamp(bird.flying + 1, 0, 10)
+    bird.stamina = clamp(bird.stamina - 1, 0, 10)
+    bird.happiness = clamp(bird.happiness - 1, 0, 10)
+end
+function stats.trainRunning()
+    print("You train your bird.")
+
+    bird.running = clamp(bird.running + 1, 0, 10)
+    bird.stamina = clamp(bird.stamina - 1, 0, 10)
+    bird.happiness = clamp(bird.happiness - 1, 0, 10)
+end
 -- play action
 function stats.play()
     print("You play with your bird.")

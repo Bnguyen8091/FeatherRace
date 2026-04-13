@@ -16,7 +16,7 @@ function main()
     tools.showStats()
 
     local function showCommands() -- reusable command interface
-        print("\nCommands: feed, train, play, rest, stats, shop, quit")
+        print("\nCommands: feed, train, Run, Swim, Fly, play, rest, stats, shop, quit")
     end
 
     showCommands()
@@ -72,7 +72,60 @@ function main()
                     end
                 end
             end
+        elseif input == "Run" then
+            tools.trainRunning()
+            if tools.isGameOver() then
+                running = false
+            else
+                local raceReady = track.advanceDay()
+                tools.showStats()
+                track.showRaceStatus()
 
+                if raceReady then
+                    local finished = track.runRaceDay(tools.getBird())
+                    tools.showStats()
+
+                    if finished then
+                        running = false
+                    end
+                end
+            end
+        elseif input == "Swim" then
+            tools.trainSwimming()
+            if tools.isGameOver() then
+                running = false
+            else
+                local raceReady = track.advanceDay()
+                tools.showStats()
+                track.showRaceStatus()
+
+                if raceReady then
+                    local finished = track.runRaceDay(tools.getBird())
+                    tools.showStats()
+
+                    if finished then
+                        running = false
+                    end
+                end
+            end
+        elseif input == "Fly" then
+            tools.trainFlying()
+            if tools.isGameOver() then
+                running = false
+            else
+                local raceReady = track.advanceDay()
+                tools.showStats()
+                track.showRaceStatus()
+
+                if raceReady then
+                    local finished = track.runRaceDay(tools.getBird())
+                    tools.showStats()
+
+                    if finished then
+                        running = false
+                    end
+                end
+            end
         elseif input == "play" then
             tools.play()
             if tools.isGameOver() then
