@@ -17,7 +17,7 @@ function main()
     tools.showStats()
 
     local function showCommands() -- reusable command interface
-        print("\nCommands: feed, train, play, rest, stats, shop, quit")
+        print("\nCommands: feed, train, play, rest, stats, shop, help, quit")
     end
 
     showCommands()
@@ -136,6 +136,10 @@ function main()
         elseif input == "shop" then --shop
             shop.openShop()
             showCommands()
+
+        elseif input == "help" then
+            showCommands()
+            
         else
             print("Unknown command.")
         end
