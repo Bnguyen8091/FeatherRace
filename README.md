@@ -41,13 +41,6 @@ If Lua is installed, you should see a version number.
 ```bash
 lua main.lua
 ```
-
-## Example Run
-
-```bash
-lua main.lua
-```
-
 The game will then prompt you to enter your bird's name and begin gameplay.
 
 ## Available Commands
