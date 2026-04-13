@@ -60,29 +60,33 @@ function main()
             advanceTime()
 
         elseif input == "train" then
-
-            print("Train which skill?\n0: back\n1: speed\n2: running\n3: swimming\n4: flying \n (Each training session costs 1 stamina and reduces happiness by 1) \n (Max skill is 10 per each category)")
-            io.write("> ")
-            local skillInput = io.read()
-
             local acted = false -- Track if the player actually spent a turn
 
-            if skillInput == "1" then
-                tools.train()
-                acted = true
-            elseif skillInput == "2" then
-                tools.trainRunning()
-                acted = true
-            elseif skillInput == "3" then
-                tools.trainSwimming()
-                acted = true
-            elseif skillInput == "4" then
-                tools.trainFlying()
-                acted = true
-            elseif skillInput == "0" then
-                print("Returning to main menu.")
-            else
-                print("Invalid skill choice.")
+            while(not acted) do
+                print("Train which skill?\n0: back\n1: speed\n2: running\n3: swimming\n4: flying \n (Each training session costs 1 stamina and reduces happiness by 1) \n (Max skill is 10 per each category)")
+                io.write("> ")
+                local skillInput = io.read()
+
+                
+
+                if skillInput == "1" then
+                    tools.trainSpeed()
+                    acted = true
+                elseif skillInput == "2" then
+                    tools.trainRunning()
+                    acted = true
+                elseif skillInput == "3" then
+                    tools.trainSwimming()
+                    acted = true
+                elseif skillInput == "4" then
+                    tools.trainFlying()
+                    acted = true
+                elseif skillInput == "0" then
+                    print("Returning to main menu.")
+                    break
+                else
+                    print("Invalid skill choice.")
+                end
             end
 
             -- Only advance the game if the player actually trained
