@@ -2,6 +2,7 @@ local tools = require("stats")
 local track = require("race")
 local shop = require("shop")
 
+
 function main()
     math.randomseed(os.time())
     local running = true
@@ -55,74 +56,47 @@ function main()
             end
 
         elseif input == "train" then
-            tools.train()
-            if tools.isGameOver() then
-                running = false
+
+            print("Train which skill?\n0: back\n1: speed\n2: running\n3: swimming\n4: flying \n (Each training session costs 1 stamina and reduces happiness by 1) \n (Max skill is 10 per each category)")
+            io.write("> ")
+            local skillInput = io.read()
+
+            local acted = false -- Track if the player actually spent a turn
+
+            if skillInput == "1" then
+                tools.train()
+                acted = true
+            elseif skillInput == "2" then
+                tools.trainRunning()
+                acted = true
+            elseif skillInput == "3" then
+                tools.trainSwimming()
+                acted = true
+            elseif skillInput == "4" then
+                tools.trainFlying()
+                acted = true
+            elseif skillInput == "0" then
+                print("Returning to main menu.")
             else
-                local raceReady = track.advanceDay()
-                tools.showStats()
-                track.showRaceStatus()
-
-                if raceReady then
-                    local finished = track.runRaceDay(tools.getBird())
-                    tools.showStats()
-
-                    if finished then
-                        running = false
-                    end
-                end
+                print("Invalid skill choice.")
             end
-        elseif input == "Run" then
-            tools.trainRunning()
-            if tools.isGameOver() then
-                running = false
-            else
-                local raceReady = track.advanceDay()
-                tools.showStats()
-                track.showRaceStatus()
 
-                if raceReady then
-                    local finished = track.runRaceDay(tools.getBird())
+            -- Only advance the game if the player actually trained
+            if acted then 
+                if tools.isGameOver() then
+                    running = false
+                else
+                    local raceReady = track.advanceDay()
                     tools.showStats()
+                    track.showRaceStatus()
 
-                    if finished then
-                        running = false
-                    end
-                end
-            end
-        elseif input == "Swim" then
-            tools.trainSwimming()
-            if tools.isGameOver() then
-                running = false
-            else
-                local raceReady = track.advanceDay()
-                tools.showStats()
-                track.showRaceStatus()
+                    if raceReady then
+                        local finished = track.runRaceDay(tools.getBird())
+                        tools.showStats()
 
-                if raceReady then
-                    local finished = track.runRaceDay(tools.getBird())
-                    tools.showStats()
-
-                    if finished then
-                        running = false
-                    end
-                end
-            end
-        elseif input == "Fly" then
-            tools.trainFlying()
-            if tools.isGameOver() then
-                running = false
-            else
-                local raceReady = track.advanceDay()
-                tools.showStats()
-                track.showRaceStatus()
-
-                if raceReady then
-                    local finished = track.runRaceDay(tools.getBird())
-                    tools.showStats()
-
-                    if finished then
-                        running = false
+                        if finished then
+                            running = false
+                        end
                     end
                 end
             end

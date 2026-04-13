@@ -92,6 +92,16 @@ end
 function stats.train()
     print("You train your bird.")
 
+    if bird.stamina <= 0 then
+        print("Your bird is too exhausted to train.")
+        return
+    elseif bird.happiness <= 0 then
+        print("Your bird is too unhappy to train.")
+        return
+    elseif bird.speed >= 10 then
+        print("Your bird has reached maximum speed.")
+        return
+    end
     bird.speed = clamp(bird.speed + 1, 0, 10)
     bird.stamina = clamp(bird.stamina - 1, 0, 10)
     bird.happiness = clamp(bird.happiness - 1, 0, 10)
@@ -99,7 +109,16 @@ end
 
 function stats.trainSwimming()
     print("You train your bird.")
-
+    if bird.stamina <= 0 then
+        print("Your bird is too exhausted to train.")
+        return
+    elseif bird.happiness <= 0 then
+        print("Your bird is too unhappy to train.")
+        return
+    elseif bird.swimming >= 10 then
+        print("Your bird has reached maximum swimming ability.")
+        return
+    end
     bird.swimming = clamp(bird.swimming + 1, 0, 10)
     bird.stamina = clamp(bird.stamina - 1, 0, 10)
     bird.happiness = clamp(bird.happiness - 1, 0, 10)
@@ -107,14 +126,33 @@ end
 
 function stats.trainFlying()
     print("You train your bird.")
-
+    if bird.stamina <= 0 then
+        print("Your bird is too exhausted to train.")
+        return
+    elseif bird.happiness <= 0 then
+        print("Your bird is too unhappy to train.")
+        return
+    elseif bird.flying >= 10 then
+        print("Your bird has reached maximum flying ability.")
+        return
+    end
     bird.flying = clamp(bird.flying + 1, 0, 10)
     bird.stamina = clamp(bird.stamina - 1, 0, 10)
     bird.happiness = clamp(bird.happiness - 1, 0, 10)
 end
+
 function stats.trainRunning()
     print("You train your bird.")
-
+    if bird.stamina <= 0 then
+        print("Your bird is too exhausted to train.")
+        return
+    elseif bird.happiness <= 0 then
+        print("Your bird is too unhappy to train.")
+        return
+    elseif bird.running >= 10 then
+        print("Your bird has reached maximum running ability.")
+        return
+    end
     bird.running = clamp(bird.running + 1, 0, 10)
     bird.stamina = clamp(bird.stamina - 1, 0, 10)
     bird.happiness = clamp(bird.happiness - 1, 0, 10)
