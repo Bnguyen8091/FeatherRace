@@ -80,4 +80,7 @@ lua main.lua
 
 ## Authors
 
-FeatherRace was developed as a group project.
+- Brian Nguyen
+- Eric MisiakMax Kogan
+- Alec Pike
+- Max Kogan
