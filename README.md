@@ -73,7 +73,7 @@ During the game, you can use the following commands:
 If using GitHub, you can clone the repository with:
 
 ```bash
-git clone <your-repository-url>
+git clone [(https://github.com/Bnguyen8091/FeatherRace.git)]
 cd FeatherRace
 lua main.lua
 ```
