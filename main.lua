@@ -22,6 +22,25 @@ function main()
 
     showCommands()
 
+    local function advanceTime() -- advances towards the next race after certain commands
+        if tools.isGameOver() then
+                running = false
+            else
+                local raceReady = track.advanceDay()
+                tools.showStats()
+                track.showRaceStatus()
+
+                if raceReady then
+                    local finished = track.runRaceDay(tools.getBird())
+                    tools.showStats()
+
+                    if finished then
+                        running = false
+                    end
+                end
+            end
+    end
+
     while running do
         io.write("> ")
         local input = io.read()
@@ -38,22 +57,7 @@ function main()
 
         elseif input == "feed" then
             tools.feed()
-            if tools.isGameOver() then
-                running = false
-            else
-                local raceReady = track.advanceDay()
-                tools.showStats()
-                track.showRaceStatus()
-
-                if raceReady then
-                    local finished = track.runRaceDay(tools.getBird())
-                    tools.showStats()
-
-                    if finished then
-                        running = false
-                    end
-                end
-            end
+            advanceTime()
 
         elseif input == "train" then
 
@@ -83,65 +87,26 @@ function main()
 
             -- Only advance the game if the player actually trained
             if acted then 
-                if tools.isGameOver() then
-                    running = false
-                else
-                    local raceReady = track.advanceDay()
-                    tools.showStats()
-                    track.showRaceStatus()
-
-                    if raceReady then
-                        local finished = track.runRaceDay(tools.getBird())
-                        tools.showStats()
-
-                        if finished then
-                            running = false
-                        end
-                    end
-                end
+                advanceTime()
             end
         elseif input == "play" then
             tools.play()
-            if tools.isGameOver() then
-                running = false
-            else
-                local raceReady = track.advanceDay()
-                tools.showStats()
-                track.showRaceStatus()
-
-                if raceReady then
-                    local finished = track.runRaceDay(tools.getBird())
-                    tools.showStats()
-
-                    if finished then
-                        running = false
-                    end
-                end
-            end
+            advanceTime()
 
         elseif input == "rest" then
             tools.rest()
-            local raceReady = track.advanceDay()
-            tools.showStats()
-            track.showRaceStatus()
+            advanceTime()
 
-            if raceReady then
-                local finished = track.runRaceDay(tools.getBird())
-                tools.showStats()
-
-                if finished then
-                    running = false
-                end
-            end
         elseif input == "shop" then --shop
             shop.openShop()
             showCommands()
 
         elseif input == "help" then
             showCommands()
-            
+
         else
             print("Unknown command.")
+            showCommands()
         end
     end
 end
