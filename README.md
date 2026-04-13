@@ -81,6 +81,6 @@ lua main.lua
 ## Authors
 
 - Brian Nguyen
-- Eric MisiakMax Kogan
+- Eric Misiak
 - Alec Pike
 - Max Kogan
