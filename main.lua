@@ -17,7 +17,7 @@ function main()
     tools.showStats()
 
     local function showCommands() -- reusable command interface
-        print("\nCommands: feed, train, Run, Swim, Fly, play, rest, stats, shop, quit")
+        print("\nCommands: feed, train, play, rest, stats, shop, quit")
     end
 
     showCommands()
