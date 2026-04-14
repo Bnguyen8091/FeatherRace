@@ -93,8 +93,8 @@ function stats.feed()
 end
 
 -- train action
-function stats.train()
-    print("You train your bird.")
+function stats.trainSpeed()
+    print("You train your bird in general speed.")
 
     if bird.stamina <= 0 then
         print("Your bird is too exhausted to train.")
@@ -112,7 +112,7 @@ function stats.train()
 end
 
 function stats.trainSwimming()
-    print("You train your bird.")
+    print("You train your bird in swimming.")
     if bird.stamina <= 0 then
         print("Your bird is too exhausted to train.")
         return
@@ -129,7 +129,7 @@ function stats.trainSwimming()
 end
 
 function stats.trainFlying()
-    print("You train your bird.")
+    print("You train your bird in flying.")
     if bird.stamina <= 0 then
         print("Your bird is too exhausted to train.")
         return
@@ -146,7 +146,7 @@ function stats.trainFlying()
 end
 
 function stats.trainRunning()
-    print("You train your bird.")
+    print("You train your bird in running.")
     if bird.stamina <= 0 then
         print("Your bird is too exhausted to train.")
         return
