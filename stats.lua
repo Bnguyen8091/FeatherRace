@@ -11,6 +11,10 @@ local bird = {
     money = 10000 --Default money for testing
 }
 
+function stats.getBird()
+    return bird
+end
+
 -- clamp helper
 local function clamp(value, min, max)
     if value < min then return min end
@@ -234,6 +238,13 @@ function stats.spendMoney(amount)
         return true
     else
         return false
+    end
+end
+
+-- Add this to stats.lua
+function stats.setBird(data)
+    for k, v in pairs(data) do
+        bird[k] = v
     end
 end
 

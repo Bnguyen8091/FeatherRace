@@ -16,6 +16,8 @@ local purchases = {
     bed = false
 }
 
+
+
 -- helper to format item display
 local function itemText(id, name, price, bought)
     if bought then
@@ -104,6 +106,13 @@ end
 -- expose purchase data (for later use)
 function shop.getPurchases()
     return purchases
+end
+
+-- Add this to shop.lua so the loadGame function can push data back in
+function shop.setPurchases(data)
+    for k, v in pairs(data) do
+        purchases[k] = v
+    end
 end
 
 return shop

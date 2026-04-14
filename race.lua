@@ -21,7 +21,19 @@ local raceNames = {
     "Beak Battle",
     "Wing War",
     "Tailwind Tussle",
-    "Feather Flurry"
+    "Feather Flurry",
+    "Beak Blitz",
+    "Wing Whirl",
+    "Tailwind Tornado",
+    "Feather Fury",
+    "Beak Barrage",
+    "Wing Whip",
+    "Tailwind Tempest",
+    "Feather Flash",
+    "Beak Burst",
+    "Wing Whiz",
+    "Tailwind Thunder",
+    "Feather Flare",
 }
 
 local raceDayOptions = {
@@ -73,6 +85,7 @@ function race.createRace()
     race.flying = (part3 / total) * 100
 
     race.name = raceNames[math.random(1, #raceNames)]
+    
 end
 
 function race.startRaceCycle()
@@ -217,6 +230,33 @@ function race.runRaceDay(bird)
 
     race.showRace()
     return false
+end
+
+function race.getRaceData()
+    return {
+        name = race.name,
+        distance = race.distance,
+        running = race.running,
+        swimming = race.swimming,
+        flying = race.flying,
+        stage = race.stage,
+        daysLeft = race.daysLeft,
+        totalStages = race.totalStages,
+        difficultyMultiplier = race.difficultyMultiplier
+    }
+end
+
+-- You also need a setter to restore the data when loading
+function race.setRaceData(data)
+    race.name = data.name
+    race.distance = data.distance
+    race.running = data.running
+    race.swimming = data.swimming
+    race.flying = data.flying
+    race.stage = data.stage
+    race.daysLeft = data.daysLeft
+    race.totalStages = data.totalStages
+    race.difficultyMultiplier = data.difficultyMultiplier
 end
 
 return race
