@@ -70,12 +70,65 @@ local function deleteSaveFile()
     end
 end
 
+local function waitForContinue(message)
+    print("")
+    print(message or "Press Enter to continue...")
+    io.read()
+end
+
+local function showFullHelp()
+    print("\n================================")
+    print("         COMMAND MENU")
+    print("================================")
+    print(" feed   - restore a little stamina")
+    print(" train  - improve a chosen skill")
+    print(" play   - increase happiness")
+    print(" rest   - recover stamina")
+    print(" stats  - view duck stats")
+    print(" shop   - open the shop")
+    print(" rate   - ask trainer for win odds")
+    print(" help   - show this menu")
+    print(" quit   - exit the game")
+    print("================================")
+end
+
+local function showCompactCommands()
+    print("\n================================")
+    print("          COMMAND HUD")
+    print("================================")
+    print(" feed   train   play   rest")
+    print(" stats  shop    rate")
+    print(" help   quit")
+    print("================================")
+end
+
 local function startNewGame()
     print("Starting a new game.")
     io.write("Enter your bird's name: ")
     local name = io.read()
     tools.createBird(name)
     track.startRaceCycle()
+
+    waitForContinue("Press Enter to view the upcoming race...")
+    track.showRace()
+
+    waitForContinue("Press Enter to view your duck's current stats...")
+    tools.showStats()
+
+    waitForContinue("Press Enter to view the command menu...")
+    showFullHelp()
+
+    waitForContinue("Press Enter to start playing...")
+end
+
+local function showLoadedGameIntro()
+    waitForContinue("Press Enter to view the upcoming race...")
+    track.showRace()
+
+    waitForContinue("Press Enter to view your duck's current stats...")
+    tools.showStats()
+
+    waitForContinue("Press Enter to continue your adventure...")
 end
 
 function main()
@@ -104,6 +157,7 @@ function main()
                 local game = loadGame()
                 if game then
                     print("Loaded saved game.")
+                    showLoadedGameIntro()
                     choosing = false
                 else
                     print("Could not load save.")
@@ -126,15 +180,6 @@ function main()
         print("No saved game found.")
         startNewGame()
     end
-
-    track.showRace()
-    tools.showStats()
-
-    local function showCommands()
-        print("\nCommands: feed, train, play, rest, stats, shop, rate, help, quit")
-    end
-
-    showCommands()
 
     local function advanceTime()
         if tools.isGameOver() then
@@ -188,6 +233,7 @@ function main()
     end
 
     while running do
+        showCompactCommands()
         io.write("> ")
         local input = io.read()
 
@@ -208,14 +254,19 @@ function main()
             local acted = false
 
             while not acted do
-                print("Train which skill?")
+                print("\n================================")
+                print("         TRAINING MENU")
+                print("================================")
                 print("0: back")
                 print("1: speed")
                 print("2: running")
                 print("3: swimming")
                 print("4: flying")
-                print("(Each training session costs 1 stamina and reduces happiness by 1)")
-                print("(Max skill is 10 per each category)")
+                print("--------------------------------")
+                print("Each session costs 1 stamina")
+                print("and reduces happiness by 1")
+                print("Max skill per category: 10")
+                print("================================")
                 io.write("> ")
 
                 local skillInput = io.read()
@@ -254,17 +305,15 @@ function main()
 
         elseif input == "shop" then
             shop.openShop()
-            showCommands()
 
         elseif input == "rate" then
             trainer.rateDuck(tools.getBird(), track.getRaceData())
 
         elseif input == "help" then
-            showCommands()
+            showFullHelp()
 
         else
             print("Unknown command.")
-            showCommands()
         end
     end
 end
