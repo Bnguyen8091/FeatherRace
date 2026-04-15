@@ -10,30 +10,40 @@ local race = {
     difficultyMultiplier = 1.0
 }
 
-local raceNames = {
-    "Feather Dash",
-    "Wing",
-    "Beak Sprint",
-    "Tailwind",
-    "Sky Glide",
-    "Wainng Race",
-    "Feather Frenzy",
-    "Beak Battle",
-    "Wing War",
-    "Tailwind Tussle",
-    "Feather Flurry",
-    "Beak Blitz",
-    "Wing Whirl",
-    "Tailwind Tornado",
-    "Feather Fury",
-    "Beak Barrage",
-    "Wing Whip",
-    "Tailwind Tempest",
-    "Feather Flash",
-    "Beak Burst",
-    "Wing Whiz",
-    "Tailwind Thunder",
-    "Feather Flare",
+local allRaceNames = {
+    running = {
+        "Crimson Canyon",
+        "Dust Sprint Valley",
+        "Ironstride Plains",
+        "Golden Track Run",
+        "Blazing Horizon",
+        "Sunfire Sprint",
+        "Thunder Trail"
+    },
+    swimming = {
+        "Emerald Rapids",
+        "Moonlit Current",
+        "Tidal Rush",
+        "Azure Depths",
+        "Coral Surge",
+        "Whirlpool Dash",
+        "Bluewater Burst"
+    },
+    flying = {
+        "Stormbreak Pass",
+        "Skyfall Ascent",
+        "Thunder Hollow",
+        "Windscar Peak",
+        "Cloudpiercer Run",
+        "Gale Force Heights",
+        "Skyfire Glide"
+    }
+}
+
+local availableRaceNames = {
+    running = {},
+    swimming = {},
+    flying = {}
 }
 
 local raceDayOptions = {
@@ -41,6 +51,24 @@ local raceDayOptions = {
     10,
     5
 }
+
+local function resetRaceNames()
+    availableRaceNames.running = {}
+    availableRaceNames.swimming = {}
+    availableRaceNames.flying = {}
+
+    for _, name in ipairs(allRaceNames.running) do
+        table.insert(availableRaceNames.running, name)
+    end
+
+    for _, name in ipairs(allRaceNames.swimming) do
+        table.insert(availableRaceNames.swimming, name)
+    end
+
+    for _, name in ipairs(allRaceNames.flying) do
+        table.insert(availableRaceNames.flying, name)
+    end
+end
 
 local function getStageName()
     if race.stage == 1 then
@@ -52,12 +80,45 @@ local function getStageName()
     end
 end
 
+local function getDominantTheme()
+    if race.running >= race.swimming and race.running >= race.flying then
+        return "running"
+    elseif race.swimming >= race.running and race.swimming >= race.flying then
+        return "swimming"
+    else
+        return "flying"
+    end
+end
+
+local function getUniqueRaceName()
+    local theme = getDominantTheme()
+    local pool = availableRaceNames[theme]
+
+    if #pool == 0 then
+        for _, fallbackTheme in ipairs({ "running", "swimming", "flying" }) do
+            if #availableRaceNames[fallbackTheme] > 0 then
+                pool = availableRaceNames[fallbackTheme]
+                break
+            end
+        end
+    end
+
+    if not pool or #pool == 0 then
+        return "Champion's Trial"
+    end
+
+    local index = math.random(1, #pool)
+    local chosenName = pool[index]
+    table.remove(pool, index)
+
+    return chosenName
+end
+
 function race.createRace()
     local part1
     local part2
     local part3
 
-    -- gradually harder races
     if race.stage == 1 then
         part1 = math.random(3, 5)
         part2 = math.random(3, 5)
@@ -84,13 +145,13 @@ function race.createRace()
     race.swimming = (part2 / total) * 100
     race.flying = (part3 / total) * 100
 
-    race.name = raceNames[math.random(1, #raceNames)]
-    
+    race.name = getUniqueRaceName()
 end
 
 function race.startRaceCycle()
     race.stage = 1
     race.daysLeft = raceDayOptions[race.stage]
+    resetRaceNames()
     race.createRace()
 
     print("\n================================")
@@ -109,6 +170,7 @@ function race.showRace()
     print("Running: " .. string.format("%.2f", race.running) .. "%")
     print("Swimming: " .. string.format("%.2f", race.swimming) .. "%")
     print("Flying: " .. string.format("%.2f", race.flying) .. "%")
+    print("Theme: " .. getDominantTheme())
     print("Days Until Race: " .. race.daysLeft)
     print("================================\n")
 end
@@ -141,9 +203,9 @@ function race.advanceDay()
 end
 
 function race.racing(bird)
-    local runPower = (math.random(1, 10) + (bird.running * 3))
-    local swimPower = (math.random(1, 10) + (bird.swimming * 3))
-    local flyPower = (math.random(1, 10) + (bird.flying * 3))
+    local runPower = math.random(1, 10) + (bird.running * 3)
+    local swimPower = math.random(1, 10) + (bird.swimming * 3)
+    local flyPower = math.random(1, 10) + (bird.flying * 3)
 
     local modifier = 0
     if bird.happiness > 7 then
@@ -167,9 +229,10 @@ function race.racing(bird)
     swimPower = (swimPower + modifier) * staminaMult
     flyPower = (flyPower + modifier) * staminaMult
 
-    local totalScore = (runPower * (race.running / 100)) +
-                       (swimPower * (race.swimming / 100)) +
-                       (flyPower * (race.flying / 100))
+    local totalScore =
+        (runPower * (race.running / 100)) +
+        (swimPower * (race.swimming / 100)) +
+        (flyPower * (race.flying / 100))
 
     local distancePerformance = race.distance * (totalScore / 50) * (1 + (bird.speed) * 0.05)
     local requiredDistance = race.distance * race.difficultyMultiplier
@@ -242,11 +305,11 @@ function race.getRaceData()
         stage = race.stage,
         daysLeft = race.daysLeft,
         totalStages = race.totalStages,
-        difficultyMultiplier = race.difficultyMultiplier
+        difficultyMultiplier = race.difficultyMultiplier,
+        availableRaceNames = availableRaceNames
     }
 end
 
--- You also need a setter to restore the data when loading
 function race.setRaceData(data)
     race.name = data.name
     race.distance = data.distance
@@ -257,6 +320,12 @@ function race.setRaceData(data)
     race.daysLeft = data.daysLeft
     race.totalStages = data.totalStages
     race.difficultyMultiplier = data.difficultyMultiplier
+
+    if data.availableRaceNames then
+        availableRaceNames = data.availableRaceNames
+    else
+        resetRaceNames()
+    end
 end
 
 return race
