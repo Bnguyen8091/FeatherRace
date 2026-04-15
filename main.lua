@@ -15,18 +15,20 @@ local function saveGame()
 
     if not success then
         print("Failed to gather save data: " .. tostring(Save))
-        return
+        return false
     end
 
     local saveData = json.encode(Save)
     local file, err = io.open("savegame.json", "w")
-    
+
     if file then
         file:write(saveData)
         file:close()
         print("Game saved successfully.")
+        return true
     else
         print("Error saving game: " .. tostring(err))
+        return false
     end
 end
 
@@ -41,35 +43,88 @@ local function loadGame()
     file:close()
 
     local status, Save = pcall(json.decode, contents)
-    
+
     if status and Save then
         if Save.bird then tools.setBird(Save.bird) end
         if Save.race then track.setRaceData(Save.race) end
         if Save.purchases then shop.setPurchases(Save.purchases) end
-        
+
         print("Game loaded successfully.")
         return true
     else
-        print("Error decoding save data: " .. (Save or "Unknown error"))
+        print("Error decoding save data: " .. tostring(Save))
         return false
     end
+end
+
+local function deleteSaveFile()
+    local success, err = os.remove("savegame.json")
+
+    if success then
+        print("Save file deleted.")
+    else
+        print("No save file to delete, or unable to delete it.")
+        if err then
+            print("Details: " .. tostring(err))
+        end
+    end
+end
+
+local function startNewGame()
+    print("Starting a new game.")
+    io.write("Enter your bird's name: ")
+    local name = io.read()
+    tools.createBird(name)
+    track.startRaceCycle()
 end
 
 function main()
     math.randomseed(os.time())
     local running = true
 
-    local game = loadGame()
+    local file = io.open("savegame.json", "r")
 
-    if game then
-        print("Loaded saved game.")
+    if file then
+        file:close()
+
+        local choosing = true
+        while choosing do
+            print("\n================================")
+            print("         FEATHERRACE")
+            print("================================")
+            print("1: Continue saved game")
+            print("2: Start new game")
+            print("3: Delete saved game")
+            print("================================")
+            io.write("> ")
+
+            local choice = io.read()
+
+            if choice == "1" then
+                local game = loadGame()
+                if game then
+                    print("Loaded saved game.")
+                    choosing = false
+                else
+                    print("Could not load save.")
+                    startNewGame()
+                    choosing = false
+                end
+
+            elseif choice == "2" then
+                startNewGame()
+                choosing = false
+
+            elseif choice == "3" then
+                deleteSaveFile()
+
+            else
+                print("Invalid choice.")
+            end
+        end
     else
-        print("No saved game found. Starting a new game.")
-        io.write("Enter your bird's name: ")
-        local name = io.read()
-
-        tools.createBird(name)
-        track.startRaceCycle()
+        print("No saved game found.")
+        startNewGame()
     end
 
     track.showRace()
@@ -100,6 +155,38 @@ function main()
         end
     end
 
+    local function handleQuit()
+        while true do
+            print("\nSave before quitting? (y/n/c)")
+            print("y = save and quit")
+            print("n = quit without saving")
+            print("c = cancel")
+            io.write("> ")
+
+            local choice = io.read()
+            choice = choice:lower()
+
+            if choice == "y" then
+                saveGame()
+                print("Saving and exiting...")
+                running = false
+                break
+
+            elseif choice == "n" then
+                print("Exiting without saving...")
+                running = false
+                break
+
+            elseif choice == "c" then
+                print("Returning to game.")
+                break
+
+            else
+                print("Invalid choice. Please enter y, n, or c.")
+            end
+        end
+    end
+
     while running do
         io.write("> ")
         local input = io.read()
@@ -107,9 +194,7 @@ function main()
         input = input:match("^%s*(.-)%s*$")
 
         if input == "quit" then
-            saveGame()
-            print("Exiting...")
-            running = false
+            handleQuit()
 
         elseif input == "stats" then
             tools.showStats()
