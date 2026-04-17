@@ -6,8 +6,6 @@ local purchases = {
     flippers = false,
     jetpack = false,
     shoes = false,
-    energy = false,
-    treats = false,
 
     pool = false,
     fan = false,
@@ -15,6 +13,7 @@ local purchases = {
     playroom = false,
     bed = false
 }
+
 
 
 
@@ -27,6 +26,16 @@ local function itemText(id, name, price, bought)
     end
 end
 
+
+--helper for consumables
+function shop.has(key)
+    return purchases[key] == true
+end
+
+function shop.consume(key)
+    purchases[key] = false
+end
+
 function shop.openShop()
     local inShop = true
 
@@ -37,18 +46,18 @@ function shop.openShop()
         print("Current Money: " .. stats.getMoney())
 
         print("\nBoosters (goes away after one race):")
-        print(itemText(1, "Flippers - Improves swimming by 2x", 100, purchases.flippers))
-        print(itemText(2, "Jetpack - Improves flying by 2x", 100, purchases.jetpack))
-        print(itemText(3, "Running Shoes - Improves running by 2x", 100, purchases.shoes))
+        print(itemText(1, "Flippers - Improves swimming by 1.5x", 100, purchases.flippers))
+        print(itemText(2, "Jetpack - Improves flying by 1.5x", 100, purchases.jetpack))
+        print(itemText(3, "Running Shoes - Improves running by 1.5x", 100, purchases.shoes))
         print(itemText(4, "Energy Drink - Full stamina restore", 100, purchases.energy))
         print(itemText(5, "Treats - Full happiness restore", 100, purchases.treats))
 
-        print("\nTraining upgrades:")
-        print(itemText(6, "Swimming Pool - Swim training x1.25", 200, purchases.pool))
-        print(itemText(7, "Giant Fan - Fly training x1.25", 200, purchases.fan))
-        print(itemText(8, "Treadmill - Run training x1.25", 200, purchases.treadmill))
-        print(itemText(9, "Playroom - Play effectiveness x1.25", 200, purchases.playroom))
-        print(itemText(10, "Better Bed - Rest effectiveness x1.25", 200, purchases.bed))
+        print("\nPermanent Training upgrades:")
+        print(itemText(6, "Swimming Pool - Swim training x1.1", 200, purchases.pool))
+        print(itemText(7, "Giant Fan - Fly training x1.1", 200, purchases.fan))
+        print(itemText(8, "Treadmill - Run training x1.1", 200, purchases.treadmill))
+        print(itemText(9, "Playroom - Play effectiveness x1.1", 200, purchases.playroom))
+        print(itemText(10, "Better Bed - Rest effectiveness +1", 200, purchases.bed))
 
         print("================================")
         print("Type item number to buy or 'leave'")
@@ -86,11 +95,31 @@ function shop.handlePurchase(choice)
         end
     end
 
+    --boosters
     if choice == 1 then buy("flippers", 100)
     elseif choice == 2 then buy("jetpack", 100)
     elseif choice == 3 then buy("shoes", 100)
-    elseif choice == 4 then buy("energy", 100)
-    elseif choice == 5 then buy("treats", 100)
+    
+    --
+    elseif choice == 4 then
+    if stats.getBird().stamina >= 10 then
+        print("Stamina already full.")
+        return
+    end
+    if stats.spendMoney(100) then
+        stats.getBird().stamina = 10
+        print("Energy fully restored!")
+    end
+
+    elseif choice == 5 then
+    if stats.getBird().happiness >= 10 then
+        print("Happiness already full.")
+        return
+    end
+    if stats.spendMoney(100) then
+        stats.getBird().happiness = 10
+        print("Happiness fully restored!")
+    end
 
     elseif choice == 6 then buy("pool", 200)
     elseif choice == 7 then buy("fan", 200)

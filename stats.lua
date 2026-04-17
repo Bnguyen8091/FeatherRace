@@ -38,6 +38,7 @@ local function makeBar(value, max)
 end
 
 local function trainSkill(skillName, statKey, maxMessage)
+    local shop = require("shop")
     print("You train your bird in " .. skillName .. ".")
 
     if bird.stamina <= 0 then
@@ -51,7 +52,21 @@ local function trainSkill(skillName, statKey, maxMessage)
         return
     end
 
-    bird[statKey] = clamp(bird[statKey] + 1, 0, 10)
+    --Training with shop upgrades
+    local multiplier = 1
+
+    if statKey == "swimming" and shop.has("pool") then
+        multiplier = 1.1
+        print("Your bird trains in the pool! [x1.1 Training Bonus]")
+    elseif statKey == "flying" and shop.has("fan") then
+        multiplier = 1.1
+        print("Your bird trains on a giant fan! [x1.1 Training Bonus]")
+    elseif statKey == "running" and shop.has("treadmill") then
+        multiplier = 1.1
+        print("Your bird trains on the treadmill! [x1.1 Training Bonus]")
+    end
+
+    bird[statKey] = clamp(bird[statKey] + multiplier, 0, 10)
     bird.stamina = clamp(bird.stamina - 1, 0, 10)
     bird.happiness = clamp(bird.happiness - 1, 0, 10)
 end
@@ -118,7 +133,7 @@ end
 
 function stats.play()
     print("You play with your bird.")
-
+    local shop = require("shop")
     local mood = getMood()
     local bonus = 0
 
@@ -134,24 +149,39 @@ function stats.play()
         bonus = 3
     end
 
-    bird.happiness = clamp(bird.happiness + 2 + bonus, 0, 10)
+    --playroom boost
+    local multiplier = 1
+    if shop.has("playroom") then
+        print("Your bird has fun in the playroom! [x1.1 Playing Bonus]")
+        multiplier = 1.1
+    end
+
+bird.happiness = clamp(bird.happiness + (2 + bonus) * multiplier, 0, 10)
     bird.stamina = clamp(bird.stamina - 1, 0, 10)
 end
 
 function stats.rest()
+    local shop = require("shop")
     local outcomes = {
         { name = "Sleep Deprived", recovery = 5 },
         { name = "Rested", recovery = 7 },
-        { name = "Well Rested", recovery = 10 }
+        { name = "Well Rested", recovery = 9 }
     }
 
     local result = outcomes[math.random(#outcomes)]
 
     print("Your bird takes a rest.")
+    --bedroom boost
+    local multiplier = 0
     print("Rest quality: " .. result.name)
     print("Stamina restored: +" .. result.recovery)
+    if shop.has("bed") then
+        multiplier = 1
+        print("The bigger bed makes your bird rest better! [+1 Resting Bonus]")
+        print("Boosted Stamina restored:" .. result.recovery .. "->" .. (result.recovery + multiplier))
+    end
 
-    bird.stamina = clamp(bird.stamina + result.recovery, 0, 10)
+    bird.stamina = clamp(bird.stamina + result.recovery + multiplier, 0, 10)
 end
 
 function stats.getMoodRaceModifier()
