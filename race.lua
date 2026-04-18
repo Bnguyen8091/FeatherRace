@@ -313,6 +313,20 @@ function race.runRaceDay(bird)
         return true
     end
 
+    local stats = require("stats")
+    local reward = 0
+
+    if race.stage == 1 then
+        reward = 50
+    elseif race.stage == 2 then
+        reward = 100
+    else
+        reward = 200
+    end
+
+    stats.addMoney(reward)
+    print("You earned " .. reward .. " coins!")
+
     if race.stage == race.totalStages then
         print("\n================================")
         print("        CHAMPION ENDING")

@@ -8,7 +8,7 @@ local bird = {
     swimming = 5,
     flying = 6,
     running = 4,
-    money = 10000
+    money = 50
 }
 
 local function clamp(value, min, max)
@@ -52,7 +52,6 @@ local function trainSkill(skillName, statKey, maxMessage)
         return
     end
 
-    --Training with shop upgrades
     local multiplier = 1
 
     if statKey == "swimming" and shop.has("pool") then
@@ -79,6 +78,7 @@ function stats.createBird(name)
     bird.swimming = math.random(4, 6)
     bird.flying = math.random(4, 6)
     bird.running = math.random(4, 6)
+    bird.money = 50
 end
 
 function stats.showStats()
@@ -92,7 +92,7 @@ function stats.showStats()
     print("Swimming:  " .. bird.swimming)
     print("Flying:    " .. bird.flying)
     print("Running:   " .. bird.running)
-    print("Money:     " .. bird.money)
+    print("Coins:     " .. bird.money)
     print("================================\n")
 end
 
@@ -149,14 +149,13 @@ function stats.play()
         bonus = 3
     end
 
-    --playroom boost
     local multiplier = 1
     if shop.has("playroom") then
         print("Your bird has fun in the playroom! [x1.1 Playing Bonus]")
         multiplier = 1.1
     end
 
-bird.happiness = clamp(bird.happiness + (2 + bonus) * multiplier, 0, 10)
+    bird.happiness = clamp(bird.happiness + (2 + bonus) * multiplier, 0, 10)
     bird.stamina = clamp(bird.stamina - 1, 0, 10)
 end
 
@@ -171,14 +170,14 @@ function stats.rest()
     local result = outcomes[math.random(#outcomes)]
 
     print("Your bird takes a rest.")
-    --bedroom boost
     local multiplier = 0
     print("Rest quality: " .. result.name)
     print("Stamina restored: +" .. result.recovery)
+
     if shop.has("bed") then
         multiplier = 1
         print("The bigger bed makes your bird rest better! [+1 Resting Bonus]")
-        print("Boosted Stamina restored:" .. result.recovery .. "->" .. (result.recovery + multiplier))
+        print("Boosted Stamina restored: " .. result.recovery .. " -> " .. (result.recovery + multiplier))
     end
 
     bird.stamina = clamp(bird.stamina + result.recovery + multiplier, 0, 10)
