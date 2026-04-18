@@ -265,7 +265,7 @@ function main()
                 print("--------------------------------")
                 print("Each session costs 1 stamina")
                 print("and reduces happiness by 1")
-                print("Max skill per category: 10")
+                print("Max skill per category: 25")
                 print("================================")
                 io.write("> ")
 

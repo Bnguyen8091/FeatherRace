@@ -1,5 +1,9 @@
 local stats = {}
 
+local MAX_SKILL = 25
+local MAX_STAMINA = 10
+local MAX_HAPPINESS = 10
+
 local bird = {
     name = "Default",
     speed = 6,
@@ -47,7 +51,7 @@ local function trainSkill(skillName, statKey, maxMessage)
     elseif bird.happiness <= 0 then
         print("Your bird is too unhappy to train.")
         return
-    elseif bird[statKey] >= 10 then
+    elseif bird[statKey] >= MAX_SKILL then
         print(maxMessage)
         return
     end
@@ -65,15 +69,15 @@ local function trainSkill(skillName, statKey, maxMessage)
         print("Your bird trains on the treadmill! [x1.1 Training Bonus]")
     end
 
-    bird[statKey] = clamp(bird[statKey] + multiplier, 0, 10)
-    bird.stamina = clamp(bird.stamina - 1, 0, 10)
-    bird.happiness = clamp(bird.happiness - 1, 0, 10)
+    bird[statKey] = clamp(bird[statKey] + multiplier, 0, MAX_SKILL)
+    bird.stamina = clamp(bird.stamina - 1, 0, MAX_STAMINA)
+    bird.happiness = clamp(bird.happiness - 1, 0, MAX_HAPPINESS)
 end
 
 function stats.createBird(name)
     bird.name = name or "Bird"
     bird.speed = math.random(4, 6)
-    bird.stamina = 10
+    bird.stamina = MAX_STAMINA
     bird.happiness = math.random(4, 6)
     bird.swimming = math.random(4, 6)
     bird.flying = math.random(4, 6)
@@ -86,12 +90,12 @@ function stats.showStats()
     print("         BIRD STATUS")
     print("================================")
     print("Name:      " .. bird.name)
-    print("Speed:     " .. bird.speed)
-    print("Stamina:   " .. bird.stamina .. " " .. makeBar(bird.stamina, 10))
+    print("Speed:     " .. string.format("%.1f", bird.speed))
+    print("Stamina:   " .. bird.stamina .. " " .. makeBar(bird.stamina, MAX_STAMINA))
     print("Mood:      " .. getMood())
-    print("Swimming:  " .. bird.swimming)
-    print("Flying:    " .. bird.flying)
-    print("Running:   " .. bird.running)
+    print("Swimming:  " .. string.format("%.1f", bird.swimming))
+    print("Flying:    " .. string.format("%.1f", bird.flying))
+    print("Running:   " .. string.format("%.1f", bird.running))
     print("Coins:     " .. bird.money)
     print("================================\n")
 end
@@ -111,8 +115,8 @@ function stats.feed()
     print("You feed your bird.")
     print("Stamina restored: +" .. recovery)
 
-    bird.stamina = clamp(bird.stamina + recovery, 0, 10)
-    bird.happiness = clamp(bird.happiness + 1, 0, 10)
+    bird.stamina = clamp(bird.stamina + recovery, 0, MAX_STAMINA)
+    bird.happiness = clamp(bird.happiness + 1, 0, MAX_HAPPINESS)
 end
 
 function stats.trainSpeed()
@@ -155,8 +159,8 @@ function stats.play()
         multiplier = 1.1
     end
 
-    bird.happiness = clamp(bird.happiness + (2 + bonus) * multiplier, 0, 10)
-    bird.stamina = clamp(bird.stamina - 1, 0, 10)
+    bird.happiness = clamp(bird.happiness + (2 + bonus) * multiplier, 0, MAX_HAPPINESS)
+    bird.stamina = clamp(bird.stamina - 1, 0, MAX_STAMINA)
 end
 
 function stats.rest()
@@ -180,7 +184,7 @@ function stats.rest()
         print("Boosted Stamina restored: " .. result.recovery .. " -> " .. (result.recovery + multiplier))
     end
 
-    bird.stamina = clamp(bird.stamina + result.recovery + multiplier, 0, 10)
+    bird.stamina = clamp(bird.stamina + result.recovery + multiplier, 0, MAX_STAMINA)
 end
 
 function stats.getMoodRaceModifier()

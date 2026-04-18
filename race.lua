@@ -124,19 +124,19 @@ function race.createRace()
         part2 = math.random(3, 5)
         part3 = math.random(3, 5)
         race.distance = math.random(80, 110)
-        race.difficultyMultiplier = 0.70
+        race.difficultyMultiplier = 0.50
     elseif race.stage == 2 then
         part1 = math.random(2, 6)
         part2 = math.random(2, 6)
         part3 = math.random(2, 6)
         race.distance = math.random(110, 150)
-        race.difficultyMultiplier = 0.95
+        race.difficultyMultiplier = 0.72
     else
         part1 = math.random(1, 8)
         part2 = math.random(1, 8)
         part3 = math.random(1, 8)
         race.distance = math.random(150, 200)
-        race.difficultyMultiplier = 1.10
+        race.difficultyMultiplier = 0.90
     end
 
     local total = part1 + part2 + part3
@@ -147,7 +147,6 @@ function race.createRace()
 
     race.name = getUniqueRaceName()
 end
-
 
 function race.startRaceCycle()
     race.stage = 1
@@ -204,37 +203,32 @@ function race.advanceDay()
 end
 
 function race.racing(bird)
-
-    --grabbing shop info
     local shop = require("shop")
-    local swimBoost = shop.has("flippers") and 1.5 or 1
-    local flyBoost = shop.has("jetpack") and 1.5 or 1
-    local runBoost = shop.has("shoes") and 1.5   or 1
-    --apply booster
-    --print("Swimming:" .. bird.swimming) --DEBUG
 
-    bird.swimming = bird.swimming * swimBoost
-    bird.flying = bird.flying * flyBoost
-    bird.running = bird.running * runBoost
+    local swimBoost = shop.has("flippers") and 1.25 or 1
+    local flyBoost = shop.has("jetpack") and 1.25 or 1
+    local runBoost = shop.has("shoes") and 1.25 or 1
 
-     --print("Boosted Swimming:" .. bird.swimming) --DEBUG
+    local boostedSwimming = bird.swimming * swimBoost
+    local boostedFlying = bird.flying * flyBoost
+    local boostedRunning = bird.running * runBoost
 
     print("\nActive Boosters:")
 
     local hasAny = false
 
     if shop.has("flippers") then
-        print("- Flippers (Swim x1.5)")
+        print("- Flippers (Swim x1.25)")
         hasAny = true
     end
 
     if shop.has("jetpack") then
-        print("- Jetpack (Fly x1.5)")
+        print("- Jetpack (Fly x1.25)")
         hasAny = true
     end
 
     if shop.has("shoes") then
-        print("- Running Shoes (Run x1.5)")
+        print("- Running Shoes (Run x1.25)")
         hasAny = true
     end
 
@@ -242,15 +236,15 @@ function race.racing(bird)
         print("None")
     end
 
-    local runPower = math.random(1, 10) + (bird.running * 3)
-    local swimPower = math.random(1, 10) + (bird.swimming * 3)
-    local flyPower = math.random(1, 10) + (bird.flying * 3)
+    local runPower = math.random(2, 8) + (boostedRunning * 1.6)
+    local swimPower = math.random(2, 8) + (boostedSwimming * 1.6)
+    local flyPower = math.random(2, 8) + (boostedFlying * 1.6)
 
     local modifier = 0
     if bird.happiness > 7 then
-        modifier = 10
+        modifier = 3
     elseif bird.happiness < 3 then
-        modifier = -10
+        modifier = -3
     end
 
     local staminaMult = 1.0
@@ -259,16 +253,15 @@ function race.racing(bird)
     elseif bird.stamina < 5 then
         staminaMult = 0.75
     elseif bird.stamina > 8 then
-        staminaMult = 1.25
+        staminaMult = 1.15
     end
 
-    bird.stamina = math.max(0, bird.stamina - 5)
+    bird.stamina = math.max(0, bird.stamina - 4)
 
     runPower = (runPower + modifier) * staminaMult
     swimPower = (swimPower + modifier) * staminaMult
     flyPower = (flyPower + modifier) * staminaMult
 
-    --consume boosters
     if shop.has("flippers") then shop.consume("flippers") end
     if shop.has("jetpack") then shop.consume("jetpack") end
     if shop.has("shoes") then shop.consume("shoes") end
@@ -278,7 +271,7 @@ function race.racing(bird)
         (swimPower * (race.swimming / 100)) +
         (flyPower * (race.flying / 100))
 
-    local distancePerformance = race.distance * (totalScore / 50) * (1 + bird.speed * 0.05)
+    local distancePerformance = race.distance * (totalScore / 40) * (1 + bird.speed * 0.02)
     local requiredDistance = race.distance * race.difficultyMultiplier
 
     print("\n" .. bird.name .. " performed at level: " .. string.format("%.2f", totalScore))

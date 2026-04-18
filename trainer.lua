@@ -8,9 +8,9 @@ end
 
 local function getMoodModifier(happiness)
     if happiness > 7 then
-        return 10
+        return 3
     elseif happiness < 3 then
-        return -10
+        return -3
     else
         return 0
     end
@@ -22,7 +22,7 @@ local function getStaminaMultiplier(stamina)
     elseif stamina < 5 then
         return 0.75
     elseif stamina > 8 then
-        return 1.25
+        return 1.15
     else
         return 1.0
     end
@@ -61,13 +61,22 @@ local function getAdviceText(chance, bird, raceData)
 end
 
 function trainer.rateDuck(bird, raceData)
+    local shop = require("shop")
+
+    local swimBoost = shop.has("flippers") and 1.25 or 1
+    local flyBoost = shop.has("jetpack") and 1.25 or 1
+    local runBoost = shop.has("shoes") and 1.25 or 1
+
+    local boostedSwimming = bird.swimming * swimBoost
+    local boostedFlying = bird.flying * flyBoost
+    local boostedRunning = bird.running * runBoost
+
     local moodModifier = getMoodModifier(bird.happiness)
     local staminaMultiplier = getStaminaMultiplier(bird.stamina)
 
-    -- expected average race power instead of random rolls
-    local avgRunPower = (5.5 + (bird.running * 3) + moodModifier) * staminaMultiplier
-    local avgSwimPower = (5.5 + (bird.swimming * 3) + moodModifier) * staminaMultiplier
-    local avgFlyPower = (5.5 + (bird.flying * 3) + moodModifier) * staminaMultiplier
+    local avgRunPower = (5 + (boostedRunning * 1.6) + moodModifier) * staminaMultiplier
+    local avgSwimPower = (5 + (boostedSwimming * 1.6) + moodModifier) * staminaMultiplier
+    local avgFlyPower = (5 + (boostedFlying * 1.6) + moodModifier) * staminaMultiplier
 
     local weightedScore =
         (avgRunPower * (raceData.running / 100)) +
@@ -75,13 +84,12 @@ function trainer.rateDuck(bird, raceData)
         (avgFlyPower * (raceData.flying / 100))
 
     local projectedDistance =
-        raceData.distance * (weightedScore / 50) * (1 + (bird.speed * 0.05))
+        raceData.distance * (weightedScore / 40) * (1 + (bird.speed * 0.02))
 
     local requiredDistance = raceData.distance * raceData.difficultyMultiplier
     local ratio = projectedDistance / requiredDistance
 
-    -- convert projected performance ratio into a readable win chance
-    local chance = math.floor(clamp(((ratio - 0.70) / 0.60) * 100, 5, 95))
+    local chance = math.floor(clamp(((ratio - 0.80) / 0.45) * 100, 5, 95))
 
     print("\n================================")
     print("     VETERAN TRAINER REPORT")
